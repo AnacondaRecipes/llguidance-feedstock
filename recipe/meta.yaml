@@ -1,5 +1,5 @@
 {% set name = "llguidance" %}
-{% set version = "0.7.29" %}
+{% set version = "0.7.30" %}
 
 package:
   name: {{ name|lower }}
@@ -7,27 +7,20 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_') }}-{{ version }}.tar.gz
-  sha256: d1aa68a54f9496d36750018e7edad3bf624ee2fbcf671a7483883790d798c4fe
+  sha256: e93bf75f2b6e48afb86a5cee23038746975e1654672bf5ba0ae75f7d4d4a2248
 
 build:
   number: 0
-  python_version_independent: true  # [is_abi3]
-  skip: true  # [is_abi3 and not is_python_min]
-  ignore_run_exports:
-    from_package:
-      - cross-python_${{ target_platform }}  # [build_platform != target_platform]
+  skip: true  # [ py<310]
 
 requirements:
   build:
     - {{ compiler('rust') }}
     - {{ compiler('c') }}
-    - {{ stdlib("c") }}
+    - {{ stdlib('c') }}
     - cargo-bundle-licenses
-    - python                              # [build_platform != target_platform]
-    - cross-python_{{ target_platform }}  # [build_platform != target_platform]
-    - maturin >=1.0,<2.0                  # [build_platform != target_platform]
+
   host:
-    - python-abi3  # [is_abi3]
     - python
     - maturin >=1.0,<2.0
     - pip
@@ -39,11 +32,11 @@ test:
     - llguidance
   commands:
     - pip check
-    - abi3audit $SP_DIR/llguidance/_lib.abi3.so -s -v --assume-minimum-abi3 {{ python_min }}   # [unix and is_abi3]
-    - abi3audit %SP_DIR%/llguidance/_lib.pyd -s -v --assume-minimum-abi3 {{ python_min }}      # [win and is_abi3]
+    - abi3audit $SP_DIR/llguidance/_lib.abi3.so -s -v --assume-minimum-abi3 {{ python }}   # [unix]
+    - abi3audit %SP_DIR%/llguidance/_lib.pyd -s -v --assume-minimum-abi3 {{ python }}      # [win]
   requires:
     - pip
-    - abi3audit                      # [is_abi3]
+    - abi3audit
 
 about:
   home: https://github.com/guidance-ai/llguidance
