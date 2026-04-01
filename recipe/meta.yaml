@@ -11,11 +11,7 @@ source:
 
 build:
   number: 0
-  python_version_independent: true  # [is_abi3]
-  skip: true  # [is_abi3 and not is_python_min]
-  ignore_run_exports:
-    from_package:
-      - cross-python_${{ target_platform }}  # [build_platform != target_platform]
+  skip: true  # [py<310]
 
 requirements:
   build:
@@ -23,11 +19,7 @@ requirements:
     - {{ compiler('c') }}
     - {{ stdlib("c") }}
     - cargo-bundle-licenses
-    - python                              # [build_platform != target_platform]
-    - cross-python_{{ target_platform }}  # [build_platform != target_platform]
-    - maturin >=1.0,<2.0                  # [build_platform != target_platform]
   host:
-    - python-abi3  # [is_abi3]
     - python
     - maturin >=1.0,<2.0
     - pip
@@ -39,16 +31,23 @@ test:
     - llguidance
   commands:
     - pip check
-    - abi3audit $SP_DIR/llguidance/_lib.abi3.so -s -v --assume-minimum-abi3 {{ python_min }}   # [unix and is_abi3]
-    - abi3audit %SP_DIR%/llguidance/_lib.pyd -s -v --assume-minimum-abi3 {{ python_min }}      # [win and is_abi3]
+    - abi3audit $SP_DIR/llguidance/_lib.abi3.so -s -v --assume-minimum-abi3 {{ python }}   # [unix]
+    - abi3audit %SP_DIR%/llguidance/_lib.pyd -s -v --assume-minimum-abi3 {{ python }}      # [win]
   requires:
     - pip
-    - abi3audit                      # [is_abi3]
+    - abi3audit
 
 about:
   home: https://github.com/guidance-ai/llguidance
   summary: Bindings for the Low-level Guidance (llguidance) Rust library for use within Guidance
+  description: |
+    This library implements constrained decoding (also called constrained sampling
+    or structured outputs) for Large Language Models (LLMs). It can enforce
+    arbitrary context-free grammar on the output of LLM and is fast - on the
+    order of 50μs of CPU time per token (for 128k tokenizer) with negligible
+    startup costs.
   license: MIT
+  license_family: MIT
   license_file:
     - LICENSE
     - parser/LICENSE
@@ -56,6 +55,8 @@ about:
     - toktrie_hf_downloader/LICENSE
     - toktrie/LICENSE
     - THIRDPARTY.yml
+  doc_url: https://github.com/guidance-ai/llguidance
+  dev_url: https://github.com/guidance-ai/llguidance
 
 extra:
   recipe-maintainers:
