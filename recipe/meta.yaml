@@ -1,5 +1,5 @@
 {% set name = "llguidance" %}
-{% set version = "1.4.0" %}
+{% set version = "1.7.6" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_') }}-{{ version }}.tar.gz
-  sha256: f1371639ff1e96b1cb4e60ad64b8e514a533b12025e83954025c79c5c9cad8f7
+  sha256: db7febbe412ed2015501904646750071d7e00e6df7f85c4b956ad4f206fd2df7
 
 build:
   number: 0
@@ -31,8 +31,8 @@ test:
     - llguidance
   commands:
     - pip check
-    - abi3audit $SP_DIR/llguidance/_lib.abi3.so -s -v --assume-minimum-abi3 {{ python }}   # [unix]
-    - abi3audit %SP_DIR%/llguidance/_lib.pyd -s -v --assume-minimum-abi3 {{ python }}      # [win]
+    - abi3audit $SP_DIR/llguidance/_lib.abi3.so -s -v --assume-minimum-abi3 {{ python }}  # [unix]
+    - abi3audit %SP_DIR%/llguidance/_lib.pyd -s -v --assume-minimum-abi3 {{ python }}  # [win]
   requires:
     - pip
     - abi3audit
